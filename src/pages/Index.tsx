@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Icon from "@/components/ui/icon";
+import MissionBuilder from "@/components/MissionBuilder";
 
 // Images
 const IMG_TIM = "https://cdn.poehali.dev/projects/3d75af2c-cf4a-4edb-9add-31635e599bed/files/ddb5b262-1f97-4fbb-b78e-36b39b6e28ab.jpg";
@@ -277,6 +278,7 @@ const GrainOverlay = () => (
 );
 
 export default function Index() {
+  const [mode, setMode] = useState<"mainmenu" | "novel" | "builder">("mainmenu");
   const [sceneIdx, setSceneIdx] = useState(0);
   const [started, setStarted] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
@@ -338,6 +340,67 @@ export default function Index() {
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
   }, [started, next]);
+
+  // ── MAIN MENU ──────────────────────────────────────────────────────────────
+  if (mode === "mainmenu") {
+    return (
+      <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden cursor-default font-rubik" style={{ background: "#000" }}>
+        <div className="absolute inset-0">
+          <img src={IMG_TORNADO} alt="" className="w-full h-full object-cover opacity-20" style={{ filter: "sepia(0.6) contrast(1.3) brightness(0.6)" }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/50" />
+        </div>
+        <GrainOverlay />
+        <div className="relative z-20 text-center px-8 max-w-xl w-full">
+          <div className="font-mono text-amber-500/50 text-xs tracking-[0.5em] uppercase mb-6" style={{ animation: "fade-up 0.8s ease-out 0.1s both" }}>
+            Storm Chaser · Visual Experience
+          </div>
+          <h1 className="font-bebas text-[clamp(5rem,18vw,12rem)] leading-none tracking-widest text-white mb-2" style={{ textShadow: "0 0 100px rgba(200,110,20,0.3)", animation: "fade-up 0.8s ease-out 0.2s both" }}>
+            TWISTEX
+          </h1>
+          <div className="w-20 h-px bg-amber-600/40 mx-auto mb-10" style={{ animation: "fade-up 0.8s ease-out 0.3s both" }} />
+          <div className="flex flex-col gap-3 w-full max-w-sm mx-auto" style={{ animation: "fade-up 0.8s ease-out 0.4s both" }}>
+            <button
+              onClick={() => { setMode("novel"); setStarted(false); setSceneIdx(0); setShowEnd(false); }}
+              className="group relative overflow-hidden text-left px-6 py-5 border transition-all duration-200"
+              style={{ background: "rgba(10,7,2,0.9)", border: "1px solid rgba(200,140,20,0.35)", clipPath: "polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))" }}
+            >
+              <div className="absolute inset-0 bg-amber-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-4">
+                <span className="text-3xl">📖</span>
+                <div>
+                  <div className="font-oswald font-semibold text-white text-xl tracking-wide">Визуальная новелла</div>
+                  <div className="font-mono text-amber-400/60 text-xs tracking-widest mt-0.5">ИСТОРИЯ TWISTEX · 31 МАЯ 2013</div>
+                  <div className="font-rubik text-gray-500 text-xs mt-1">Документальная история гибели команды Тима Самараса</div>
+                </div>
+              </div>
+            </button>
+            <button
+              onClick={() => setMode("builder")}
+              className="group relative overflow-hidden text-left px-6 py-5 border transition-all duration-200"
+              style={{ background: "rgba(10,7,2,0.9)", border: "1px solid rgba(200,140,20,0.25)", clipPath: "polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))" }}
+            >
+              <div className="absolute inset-0 bg-amber-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-4">
+                <span className="text-3xl">🔧</span>
+                <div>
+                  <div className="font-oswald font-semibold text-white text-xl tracking-wide">Конструктор экспедиции</div>
+                  <div className="font-mono text-amber-400/60 text-xs tracking-widest mt-0.5">СОБЕРИ СВОЮ КОМАНДУ</div>
+                  <div className="font-rubik text-gray-500 text-xs mt-1">Машина, оборудование, маршрут, позиция — и выезд</div>
+                </div>
+              </div>
+              <div className="absolute top-3 right-3 font-mono text-[9px] text-green-400 border border-green-400/30 bg-green-400/10 px-2 py-0.5">НОВОЕ</div>
+            </button>
+          </div>
+        </div>
+        <style>{`@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}`}</style>
+      </div>
+    );
+  }
+
+  // ── BUILDER MODE ────────────────────────────────────────────────────────────
+  if (mode === "builder") {
+    return <MissionBuilder onBack={() => setMode("mainmenu")} />;
+  }
 
   // TITLE
   if (!started) {
