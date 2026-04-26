@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Icon from "@/components/ui/icon";
 import MissionBuilder from "@/components/MissionBuilder";
+import GameEngine from "@/components/GameEngine";
 
 // Images
 const IMG_TIM = "https://cdn.poehali.dev/projects/3d75af2c-cf4a-4edb-9add-31635e599bed/files/ddb5b262-1f97-4fbb-b78e-36b39b6e28ab.jpg";
@@ -278,7 +279,7 @@ const GrainOverlay = () => (
 );
 
 export default function Index() {
-  const [mode, setMode] = useState<"mainmenu" | "novel" | "builder">("mainmenu");
+  const [mode, setMode] = useState<"mainmenu" | "novel" | "builder" | "game">("mainmenu");
   const [sceneIdx, setSceneIdx] = useState(0);
   const [started, setStarted] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
@@ -390,6 +391,22 @@ export default function Index() {
               </div>
               <div className="absolute top-3 right-3 font-mono text-[9px] text-green-400 border border-green-400/30 bg-green-400/10 px-2 py-0.5">НОВОЕ</div>
             </button>
+            <button
+              onClick={() => setMode("game")}
+              className="group relative overflow-hidden text-left px-6 py-5 border transition-all duration-200"
+              style={{ background: "rgba(10,7,2,0.9)", border: "1px solid rgba(180,80,20,0.4)", clipPath: "polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))" }}
+            >
+              <div className="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-4">
+                <span className="text-3xl">🎮</span>
+                <div>
+                  <div className="font-oswald font-semibold text-white text-xl tracking-wide">Погоня за торнадо</div>
+                  <div className="font-mono text-red-400/60 text-xs tracking-widest mt-0.5">ПОЛНЫЙ ГЕЙМПЛЕЙ · WASD</div>
+                  <div className="font-rubik text-gray-500 text-xs mt-1">Собери машину в гараже, выезжай и гонись за вихрем</div>
+                </div>
+              </div>
+              <div className="absolute top-3 right-3 font-mono text-[9px] text-red-400 border border-red-400/30 bg-red-400/10 px-2 py-0.5">ГОРЯЧЕЕ</div>
+            </button>
           </div>
         </div>
         <style>{`@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}`}</style>
@@ -400,6 +417,11 @@ export default function Index() {
   // ── BUILDER MODE ────────────────────────────────────────────────────────────
   if (mode === "builder") {
     return <MissionBuilder onBack={() => setMode("mainmenu")} />;
+  }
+
+  // ── GAME MODE ────────────────────────────────────────────────────────────────
+  if (mode === "game") {
+    return <GameEngine onBack={() => setMode("mainmenu")} />;
   }
 
   // TITLE
